@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saas-demo
+  labels:
+    app: saas-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: saas-demo
+  template:
+    metadata:
+      labels:
+        app: saas-demo
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: saas-demo
+          image: private.ecr.aws/z6x4j9q5/saas-app:replaceImageTag
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: mysql-secret
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+
